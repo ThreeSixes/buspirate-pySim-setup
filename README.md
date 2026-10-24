@@ -30,4 +30,4 @@ This script is simple to set up and use. Simply modify the variables and run the
 
 ## Credits
 
-This script is based on work done in [this forum post](https://forum.buspirate.com/t/sle4442-smart-card-adapter-kf-011c/204/117) by `lawrence`.
+This script is based on work done in [this forum post](https://forum.buspirate.com/t/sle4442-smart-card-adapter-kf-011c/204/117) by [`lawrence`](https://forum.buspirate.com/u/lawrence/summary).
