@@ -1,6 +1,6 @@
 # buspirate-pySim-setup
 
-This script sets a BusPriate 5 up for use with [pySim](https://github.com/osmocom/pysim) by automating the commands and calculations needed to set a BusPirate 5 up to act as a serial interface with a SIM card/IC.
+This script sets a [BusPriate 5](https://docs.buspirate.com/docs/overview/hardware/) up for use with [pySim](https://github.com/osmocom/pysim) by automating the commands and calculations needed to set a BusPirate 5 up to act as a bridged serial interface with a SIM card/IC.
 
 ![BusPirate 5 on a workbench with SIM board having leads and probes attached to a SIM IC on a PCB.](assets/setup.jpg)
 
