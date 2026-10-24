@@ -5,26 +5,28 @@ https://forum.buspirate.com/t/sle4442-smart-card-adapter-kf-011c/204/117
 """
 
 import binascii
-import serial
 from time import sleep
+
+# pyserial required.
+import serial
 
 
 #################
 # CONFIGURATION #
 #################
 
-# SIM HDUART settings
+# SIM settings
 SIM_BAUD = 9600
 SIM_DATA_BITS = 8
 SIM_PARITY = "Even"
 SIM_STOP_BITS = 2
+SIM_VOLTAGE = 1.8 # Voltage your SIM wants to run at.
+SIM_MAX_CURRENT = 50 # Max current draw before cutting the PSU off.
 
 # BusPirate settings
-BP_PSU_VOLTAGE = 1.8
-BP_PSU_CURRENT = 50
-BP_PORT_NAME = '/dev/ttyBPText'
-BP_PORT_BAUD = 115200
-BP_PORT_PARITY = serial.PARITY_NONE
+BP_PORT_NAME = '/dev/ttyBPText' # Your BusPirate text console device here.
+BP_PORT_BAUD = 115200 # BusPirate serial port speed.
+BP_PORT_PARITY = "None"
 BP_PORT_STOP_BITS = 1
 
 
@@ -32,18 +34,28 @@ BP_PORT_STOP_BITS = 1
 # END CONFIGURATION #
 #####################
 
-# Map parity setting to int.
+# Map parity setting to PySerial constant.
+BP_PORT_PARITY_MAP = {
+    "none": serial.PARITY_NONE,
+    "even": serial.PARITY_EVEN,
+    "odd": serial.PARITY_NONE
+}
+
+# Map parity setting to BusPirate menu option.
 SIM_PARITY_MAP = {
     "none": 1,
     "even": 2,
     "odd": 3
 }
 
-# Map the easy-to-use parity name to the BusPirate menu choice.
-SIM_PARITY_CODE = SIM_PARITY_MAP[SIM_PARITY.lower()]
+# Map the easy-to-use BusPirate serial parity name to constant.
+BP_PORT_PARITY_CONST = BP_PORT_PARITY_MAP[SIM_PARITY.lower()]
 
 # Convert the SIM's baud rate setting to a clock signal in MHz.
 SIM_BAUD_TO_CLK_MHZ = (9600 * 372) / 1000000
+
+# Map the easy-to-use parity name to the BusPirate menu choice.
+SIM_PARITY_CODE = SIM_PARITY_MAP[SIM_PARITY.lower()]
 
 # Sequence of BusPirate commands to run.
 CONFIG_SEQ = [
@@ -57,7 +69,7 @@ CONFIG_SEQ = [
     'P',
 
     # Activate power supply.
-    'W', str(BP_PSU_VOLTAGE), str(BP_PSU_CURRENT), 
+    'W', str(SIM_VOLTAGE), str(SIM_MAX_CURRENT), 
 
     # Set bridge mode.
     'bridge'
@@ -82,10 +94,10 @@ def configure_bp(ser):
         print("Cmd: ", c)
 
         # Run command, send "enter" key, flush buffer.
-        l = ser.write(b)
+        ser.write(b)
         ser.write(CRLF)
         ser.flush()
-        data = ser.read(1024)
+        _ = ser.read(1024)
 
     print("Configuration done.")
 
@@ -110,7 +122,7 @@ def sync_bp(ser):
     print("Syncing BusPirate serial console", end="")
 
     # Press enter a few times.
-    for i in range(0, 5):
+    for _ in range(0, 5):
         print(".", end="")
 
         data = None
@@ -142,7 +154,7 @@ def main():
     """
 
     # Use our BusPirate's serial port to do a bunch of stuff...
-    with serial.Serial(BP_PORT_NAME, BP_PORT_BAUD, parity=BP_PORT_PARITY, timeout=0.5) as ser:
+    with serial.Serial(BP_PORT_NAME, BP_PORT_BAUD, parity=BP_PORT_PARITY_CONST, timeout=0.5) as ser:
 
         # Sync BusPirate console.
         sync_bp(ser)
@@ -158,7 +170,8 @@ def main():
 
         # Read and display any output.
         print("Output any post-reset data...")
-        for i in range(5):
+
+        for _ in range(5):
             data = ser.read(128)
             print("Output: ", data, "0x" + binascii.hexlify(data).decode('utf8'))
 
