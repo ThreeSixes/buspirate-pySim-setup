@@ -38,7 +38,7 @@ BP_PORT_STOP_BITS = 1
 BP_PORT_PARITY_MAP = {
     "none": serial.PARITY_NONE,
     "even": serial.PARITY_EVEN,
-    "odd": serial.PARITY_NONE
+    "odd": serial.PARITY_ODD
 }
 
 # Map parity setting to BusPirate menu option.
