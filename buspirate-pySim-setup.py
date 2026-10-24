@@ -52,7 +52,7 @@ SIM_PARITY_MAP = {
 BP_PORT_PARITY_CONST = BP_PORT_PARITY_MAP[SIM_PARITY.lower()]
 
 # Convert the SIM's baud rate setting to a clock signal in MHz.
-SIM_BAUD_TO_CLK_MHZ = (9600 * 372) / 1000000
+SIM_BAUD_TO_CLK_MHZ = (SIM_BAUD * 372) / 1000000
 
 # Map the easy-to-use parity name to the BusPirate menu choice.
 SIM_PARITY_CODE = SIM_PARITY_MAP[SIM_PARITY.lower()]
